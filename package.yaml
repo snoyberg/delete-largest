@@ -1,0 +1,45 @@
+name: delete-largest
+
+dependencies:
+- base
+- dlist
+- random
+
+library:
+  source-dirs:
+  - src
+
+tests:
+  spec:
+    source-dirs:
+    - test
+    dependencies:
+    - hspec
+    - delete-largest
+    main: Spec.hs
+  laziness:
+    source-dirs:
+    - test
+    dependencies:
+    - delete-largest
+    main: Laziness.hs
+
+benchmarks:
+  speed:
+    source-dirs:
+    - bench
+    dependencies:
+    - criterion
+    - delete-largest
+    main: Speed.hs
+    ghc-options:
+    - -O2
+  memory:
+    source-dirs:
+    - bench
+    dependencies:
+    - weigh
+    - delete-largest
+    main: Memory.hs
+    ghc-options:
+    - -O2
