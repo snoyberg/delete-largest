@@ -32,6 +32,8 @@ deleteAlls :: [(String, [Int] -> [Int])]
 deleteAlls =
   [ ("simpleDeleteAll", simpleDeleteAll)
   , ("diffListAll", diffListAll)
+  , ("deleteAllMaxCirc", deleteAllMaxCirc)
+  , ("deleteAllMaxBi", deleteAllMaxBi)
   ]
 
 deleteFirsts :: [(String, [Int] -> [Int])]
@@ -75,3 +77,30 @@ diffListFirst (x0:xs0) =
     go largest front (x:xs)
       | x <= largest = go largest (front `snoc` x) xs
       | otherwise = largest : apply front (start x xs)
+
+deleteAllMaxCirc :: Ord a => [a] -> [a]
+deleteAllMaxCirc []  = []
+deleteAllMaxCirc xs0 = xs0' where
+  (m, xs0') = go xs0
+  go [x]    = (x, [x | x < m])
+  go (x:xs) = (max x m', if x < m then x : xs' else xs')
+    where (m', xs') = go xs
+  go []     = error "no way"
+
+deleteAllMaxBi :: Ord a => [a] -> [a]
+deleteAllMaxBi []       = []
+deleteAllMaxBi (x0:xs0) = snd $ go x0 (x0:xs0) where
+  maxCons x p xs
+    | x < p     = (p, x : xs)
+    | otherwise = (x, xs)
+
+  go n [x] = maxCons x n []
+  go n (x:xs)
+    | x <  n    = (x:) <$> go n xs
+    | n <= m    = (m', mxs')
+    | otherwise = (n', nxs')
+    where
+      (n', nxs') = maxCons x n xs
+      (m, xs') = go n' xs
+      (m', mxs') = maxCons x m xs'
+  go _ []     = error "no way"
